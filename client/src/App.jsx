@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 
-const API = import.meta.env.VITE_API_URL;
+const API = "https://military-asset-management-server.onrender.com/api";
 
 const BASES = [
   { id: 1, name: "Alpha Base" },
