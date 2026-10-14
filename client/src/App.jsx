@@ -396,7 +396,7 @@ function Empty({ children }) {
 
 /* ---------- App ---------- */
 function App() {
-  const [email, setEmail] = useState("admin@example.com");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
   const [user, setUser] = useState(null);
@@ -878,6 +878,7 @@ function App() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    placeholder="Enter your email"
                   />
                 </Field>
                 <Field label="Password" id="password">
@@ -887,6 +888,7 @@ function App() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    placeholder="Enter your password"
                   />
                 </Field>
                 <SpinnerBtn loading={loading} loadingText="Signing in…">
