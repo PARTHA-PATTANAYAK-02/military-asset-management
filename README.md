@@ -1,161 +1,153 @@
 # Military Asset Management System
 
-A full-stack application for managing base inventory, purchases, transfers, assignments, returns, expenditures, dashboard balances, and audit history.
+A full-stack application for managing military base inventory, purchases, transfers, assignments, returns, and expenditures.
 
-## Technology Stack
+## Live Links
+
+- **Frontend:** https://military-asset-management-fio6.onrender.com/
+- **Backend:** https://military-asset-management-server.onrender.com
+- **Health Check:** https://military-asset-management-server.onrender.com/api/health
+- **GitHub:** https://github.com/PARTHA-PATTANAYAK-02/military-asset-management
+
+## Tech Stack
 
 - **Frontend:** React, Vite, JavaScript, CSS
-- **Backend:** Node.js, Express
-- **Database:** MySQL (`mysql2`)
-- **Authentication:** JWT (`jsonwebtoken`)
-- **Password hashing:** `bcryptjs`
+- **Backend:** Node.js, Express.js
+- **Database:** MySQL
+- **Authentication:** JWT, bcryptjs
+- **Deployment:** Render (frontend and backend), Aiven (MySQL)
 
-## Prerequisites
+## Main Features
+
+- Inventory dashboard
+- Equipment purchases and transfers
+- Equipment assignments and returns
+- Expenditure tracking
+- Role-based access control
+- Audit logging
+
+## User Roles
+
+- **ADMIN:** Overall system access according to implemented permissions.
+- **BASE_COMMANDER:** Access to the assigned base's dashboard and permitted purchase and transfer operations.
+- **LOGISTICS_OFFICER:** Purchase and transfer operations, subject to backend permissions.
+
+## Database
+
+The MySQL database includes the following tables:
+
+- `users`
+- `bases`
+- `equipment_types`
+- `opening_balances`
+- `purchases`
+- `transfers`
+- `assignments`
+- `expenditures`
+- `audit_logs`
+
+SQL backup: `Backup/military_asset_db.sql`
+
+## Run Locally
+
+### Prerequisites
 
 - Node.js and npm
-- MySQL Server
-- MySQL Workbench (optional)
+- MySQL-compatible database
+- Git
 
-## Project Structure
-
-```text
-MilitaryAssetManagement/
-├── server/
-│   ├── config/
-│   ├── middleware/
-│   ├── routes/
-│   ├── scripts/
-│   ├── server.js
-│   └── package.json
-└── client/
-    ├── src/
-    └── package.json
-```
-
-## Database Setup
-
-1. Start MySQL.
-2. Create the database if it does not already exist:
-
-   ```sql
-   CREATE DATABASE military_asset_db;
-   ```
-
-3. Import the project's schema/seed SQL file if one is included. If no SQL dump is included, use the existing database setup steps to create the required tables and seed the initial data.
-4. Confirm the database contains the required tables, including `users`, `bases`, `equipment_types`, `opening_balances`, `purchases`, `transfers`, `assignments`, `expenditures`, and `audit_logs`.
-
-## Environment Configuration
-
-Create `server/.env` locally. Use the exact MySQL and JWT variable names expected by `server/config/db.js` and the server code.
-
-The admin script expects:
-
-```env
-ADMIN_EMAIL=your-admin-email@example.com
-ADMIN_PASSWORD=use-a-strong-password-of-at-least-12-characters
-```
-
-Do not commit `.env`, database credentials, JWT secrets, or real passwords.
-
-## Install Dependencies
-
-From the project root, install dependencies in each folder.
-
-### Backend
+### Backend Setup
 
 ```bash
 cd server
 npm install
 ```
 
-### Frontend
+Create a `server/.env` file with the required database connection values, `JWT_SECRET`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD`.
+
+```bash
+npm run dev
+```
+
+### Frontend Setup
 
 Open another terminal:
 
 ```bash
 cd client
 npm install
+npm run dev
 ```
 
-## Create the Initial Admin
+Import the SQL backup into a MySQL database before starting the backend. Configure the frontend API URL to point to the backend you are using.
 
-After configuring `server/.env` and the database, run from `server/`:
+## User Creation Scripts
+
+The backend includes two scripts for creating user accounts.
+
+### 1. Create Admin
+
+**File:** `server/scripts/createAdmin.js`
+
+This script creates the Admin account using `ADMIN_EMAIL` and `ADMIN_PASSWORD` from the backend `.env` file. The password is hashed using bcrypt before being stored in the database.
+
+Run from the `server` directory:
 
 ```bash
 node scripts/createAdmin.js
 ```
 
-The script creates the configured admin if it does not already exist and hashes the password using `bcryptjs`.
+### 2. Create Demo Users
 
-## Run the Application
+**File:** `server/scripts/createTestUsers.js`
 
-### Terminal 1 — Backend
+This script creates demo accounts for the following roles:
 
-```bash
-cd server
-npm run dev
-```
-
-The backend starts through `server.js`. Confirm the API port from the server configuration or startup message.
-
-### Terminal 2 — Frontend
-
-```bash
-cd client
-npm run dev
-```
-
-Open the local URL printed by Vite.
-
-## Roles
-
-The application defines these roles:
-
-- `ADMIN`
 - `BASE_COMMANDER`
 - `LOGISTICS_OFFICER`
 
-Authentication and role restrictions are enforced by backend middleware. Base-scoped permissions depend on the authenticated user's assigned `base_id`. Check the implemented routes to confirm the exact permissions before deployment.
+The script defines each demo user's email, password, role, and assigned base.
 
-## Manual Test Checklist
-
-- [ ] Valid login succeeds.
-- [ ] Requests without an authentication token return `401 Unauthorized`.
-- [ ] Restricted role actions return `403 Forbidden`.
-- [ ] A Base Commander cannot request another base's dashboard.
-- [ ] A Base Commander cannot create a transfer between two bases unrelated to their assigned base.
-- [ ] Purchases update inventory/dashboard totals.
-- [ ] Transfers update source/destination inventory and appear in history.
-- [ ] Transfers exceeding available stock are rejected.
-- [ ] Assignments can be created and returned.
-- [ ] Expenditures can be recorded and appear in history.
-- [ ] Successful purchase, transfer, assignment, return, and expenditure actions appear in `audit_logs`.
-- [ ] A rejected transfer does not create a transfer record.
-
-## Frontend Build and Lint
-
-From `client/`:
+Run from the `server` directory:
 
 ```bash
-npm run build
+node scripts/createTestUsers.js
 ```
 
-Optional lint check:
+Both scripts skip accounts whose email addresses already exist. They do not update existing passwords or roles.
 
-```bash
-npm run lint
-```
+**Security:** Never commit `.env` files, database credentials, JWT secrets, or real passwords to GitHub.
 
-Resolve any reported errors before submission. The backend's current `npm test` script is a placeholder and does not run an automated test suite.
+## API Overview
 
-## Security Notes
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/health` | Check backend and database connectivity |
+| POST | `/api/auth/login` | Authenticate a user |
+| GET | `/api/auth/me` | Retrieve the authenticated user's information |
+| — | `/api/dashboard` | Dashboard routes |
+| — | `/api/purchases` | Purchase routes |
+| — | `/api/transfers` | Transfer routes |
+| — | `/api/assignments` | Assignment and return routes |
+| — | `/api/expenditures` | Expenditure routes |
 
-- Keep `.env` out of version control.
-- Use strong, unique credentials and a secure JWT secret.
-- Do not deploy using local test-account credentials.
-- Review CORS settings, token expiry, input validation, and role/base scoping before production use.
-- Use a non-production database for demonstrations and testing.
+Refer to the corresponding files inside `server/routes/` for supported HTTP methods and request details.
 
-## Submission Notes
+## Deployment
 
-Include a database schema/data SQL dump if the reviewer needs to recreate the database. Keep setup instructions aligned with the actual backend configuration and SQL files in the repository.
+- **Frontend:** Render Static Site
+- **Backend:** Render Web Service
+- **Database:** Aiven MySQL
+
+The backend connects to the hosted database through environment variables and an SSL-enabled connection.
+
+## Submission Deliverables
+
+- Source code and SQL database backup
+- PDF documentation
+- Deployed frontend and backend links
+- Demo video demonstrating the main workflows
+
+## Author
+
+Partha Pattanayak
