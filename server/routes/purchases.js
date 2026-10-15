@@ -75,7 +75,7 @@ router.get(
           p.equipment_type_id AS equipmentTypeId,
           e.name AS equipmentName,
           p.quantity,
-          p.purchase_date AS purchaseDate,
+          DATE_FORMAT(p.purchase_date, '%Y-%m-%d') AS purchaseDate,
           p.notes,
           p.created_at AS createdAt,
           u.name AS createdBy

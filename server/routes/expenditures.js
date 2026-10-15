@@ -100,7 +100,7 @@ router.get(
            ex.equipment_type_id AS equipmentTypeId,
            e.name AS equipmentName,
            ex.quantity,
-           ex.expenditure_date AS expenditureDate,
+           DATE_FORMAT(ex.expenditure_date, '%Y-%m-%d') AS expenditureDate,
            ex.reason,
            ex.created_at AS createdAt,
            ex.created_by AS createdById,

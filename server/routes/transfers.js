@@ -78,7 +78,7 @@ router.get(
           t.equipment_type_id AS equipmentTypeId,
           e.name AS equipmentName,
           t.quantity,
-          t.transfer_date AS transferDate,
+          DATE_FORMAT(t.transfer_date, '%Y-%m-%d') AS transferDate,
           t.status,
           t.notes,
           t.created_by AS createdById,

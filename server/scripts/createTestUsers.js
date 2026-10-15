@@ -14,7 +14,7 @@ async function createTestUsers() {
     },
     {
       name: "Bravo Logistics Officer",
-      email: "logistics.bravo@test.local",
+      email: "logistics.officer@test.local",
       password: "BravoLogistics@2026!",
       role: "LOGISTICS_OFFICER",
       baseId: 2,

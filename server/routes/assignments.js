@@ -119,7 +119,7 @@ router.get(
            e.name AS equipmentName,
            a.personnel_name AS personnelName,
            a.quantity,
-           a.assigned_at AS assignedAt,
+           DATE_FORMAT(a.assigned_at, '%Y-%m-%d') AS assignedAt,
            a.status,
            a.created_by AS createdById,
            u.name AS createdBy
